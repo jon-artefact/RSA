@@ -1,22 +1,17 @@
-/**
- * Created by John.
- */
+package main.java
 
 import java.math.BigInteger
 
-class Sender {
+class Sender : Interlocutor {
 
     private var keys: Pair<RSA.PublicKey, RSA.PrivateKey>
-    val name: String
 
-    internal constructor(name: String = "Alice") {
-        this.name = name
+    internal constructor(name: String = "Alice") : super(name) {
         this.keys = RSA.keygen()
     }
 
     @Throws(Exception::class)
-    internal constructor(name: String, bigint: BigInteger) {
-        this.name = name
+    internal constructor(name: String, bigint: BigInteger) : super(name) {
         this.keys = RSA.keygen(bigint)
     }
 
@@ -26,7 +21,9 @@ class Sender {
         }
 
     internal fun decrypt(x: BigInteger): BigInteger {
-        return RSA.decrypt(x, privateKey)
+        val m = RSA.decrypt(x, privateKey)
+        println("$x is being decrypted to $m")
+        return m
     }
 
     internal val publicKey: RSA.PublicKey

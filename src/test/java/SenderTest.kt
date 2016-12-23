@@ -1,3 +1,4 @@
+import main.java.Sender
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 

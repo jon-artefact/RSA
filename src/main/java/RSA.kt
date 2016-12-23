@@ -1,23 +1,31 @@
+package main.java
+
 import java.math.BigInteger
 import java.util.*
 
-/**
- * Created by John.
- */
 object RSA {
     val KEY_SIZE = 512
 
     val ONE = BigInteger("1")
     val TWO = BigInteger("2")
 
-    class PublicKey constructor(val e: BigInteger, val n: BigInteger)
+    val encoder = Base64.getEncoder()
+
+    class PublicKey constructor(val e: BigInteger, val n: BigInteger){
+        fun toBase64() : String {
+            return encoder.encodeToString(e.toByteArray() + n.toByteArray())
+        }
+    }
     class PrivateKey constructor(val d: BigInteger, val n: BigInteger)
+
+    class NotPrimalNumberException : Exception("Number given is not a primal number")
 
     fun encrypt(x: BigInteger, e: BigInteger, n: BigInteger): BigInteger {
         return x.modPow(e, n)
     }
 
     fun encrypt(x: BigInteger, pub: PublicKey): BigInteger {
+        println("$x is being encrypted with ${pub.toBase64()}")
         return encrypt(x, pub.e, pub.n)
     }
 
@@ -43,10 +51,10 @@ object RSA {
         return keygen(e)
     }
 
-    @Throws(Exception::class)
+    @Throws(NotPrimalNumberException::class)
     fun keygen(e: BigInteger): Pair<PublicKey, PrivateKey> {
         if (!primalTestFermat(e))
-            throw Exception("e must be primal!")
+            throw NotPrimalNumberException()
 
         var phi_n: BigInteger
         var n: BigInteger
@@ -65,7 +73,10 @@ object RSA {
 
         val d = e.modInverse(phi_n)
 
-        return Pair(PublicKey(e,n), PrivateKey(d,n))
+        val pub = PublicKey(e,n)
+        println("A pair of keys was generated\nPublic key: ${pub.toBase64()}")
+
+        return Pair(pub, PrivateKey(d,n))
     }
 
 }
