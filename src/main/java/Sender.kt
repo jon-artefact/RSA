@@ -9,7 +9,7 @@ class Sender {
     private var keys: Pair<RSA.PublicKey, RSA.PrivateKey>
     val name: String
 
-    @JvmOverloads internal constructor(name: String = "Alice") {
+    internal constructor(name: String = "Alice") {
         this.name = name
         this.keys = RSA.keygen()
     }
